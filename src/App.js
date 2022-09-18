@@ -25,22 +25,26 @@ function App() {
   }, [])
 
   if (comments.length > 0) {
+
     return (
       <div className='container bg-success p-5 rounded'>
         {
           comments[1].map((commentsItem, commentIndex) => {
+            const idNow = commentsItem.id;
 
             return (
               <React.Fragment key={commentIndex}>
-                <div className='bg-warning rounded p-3' onClick={() => { document.getElementById('toggleDiv' + commentsItem.id).classList.remove('d-none') }}>
-                  <p>{commentsItem.id}</p>
+                <div className='bg-warning rounded p-3' onClick={() => { document.getElementById('toggleDiv' + idNow).classList.remove('d-none') }}>
+                  <p>{idNow}</p>
                   <h3>{commentsItem.title}</h3>
                   <p>{commentsItem.body}</p>
-                  <small>Szerző: </small>{comments[0].map((userItems, userIndex) => {
-                    if (userItems.id === commentsItem.userId) {
+                   {comments[0].filter(userItems => userItems.id === commentsItem.userId)
+                  .map((userItems, userIndex) => {
+                   
                       return <React.Fragment key={userIndex}>
-                        <b>{userItems.name}</b>
-                        <div id={'toggleDiv' + commentsItem.id} className='mt-3 displayToggle d-none'>
+                        <b className='postAuthor'>{userItems.name}</b>
+                        <small id={'small'+idNow}></small>
+                        <div id={'toggleDiv' + idNow} className='mt-3 d-none'>
                           <ul>
                             <li>username: {userItems.username}</li>
                             <li>email: {userItems.email}</li>
@@ -51,30 +55,30 @@ function App() {
                           </ul>
 
                           <p>comments:</p>
-                          <ul>{comments[2].map((postItem, postIndex) => {
-                            if (commentsItem.id === postItem.postId) {
+                          <ul>{comments[2].filter(postItem => idNow === postItem.postId)
+                          .map((postItem, postIndex) => {
+                            
                               return <React.Fragment key={postIndex}>
                                 <li>{postItem.body}</li>
                               </React.Fragment>
-                            }
+                            
                           })}</ul>
                           <button className='form-control btn btn-danger'
                             onClick={() => {
-                              document.getElementById('toggleDiv' + commentsItem.id).classList.add('d-none', 'valami')
+                              setTimeout(() => {
+                                document.getElementById('toggleDiv' + idNow).classList.add('d-none')
+                              }, 300);
+                              
                             }}>
                             Összecsukás</button>
                         </div>
                       </React.Fragment>
-
-
-                    }
+                    
                   })}
 
                 </div>
                 <hr />
               </React.Fragment>)
-
-
 
           })
         }
@@ -82,6 +86,22 @@ function App() {
     );
 
   }
+
+  setTimeout(() => {
+    let usersPost = 0;
+    document.querySelectorAll('.postAuthor').forEach( (element, index) => {
+      let postIdNow = index + 1;
+      
+      document.querySelectorAll('.postAuthor').forEach( e => {
+        if(e.innerText === element.innerText) {
+          usersPost++;
+           document.getElementById(`small`+postIdNow).innerHTML = (` (${usersPost} poszt)`);
+        }
+      })
+
+      usersPost = 0;
+      })
+  }, 300);
 
 }
 
