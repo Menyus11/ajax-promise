@@ -2,9 +2,47 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import './App.css';
 
-function App() {
+function ListItem(props) {
+  const [visible, setVisible] = useState(true);
 
-  const [comments, setComments] = useState({});
+  return <React.Fragment>
+    {visible && 
+    <div >
+      <ul>
+        <li>username: {props.userItems.username}</li>
+        <li>email: {props.userItems.email}</li>
+        <li>phone: {props.userItems.phone}</li>
+        <li>website: {props.userItems.website}</li>
+        <li>company: {props.userItems.company.name}, motto: {props.userItems.company.catchPhrase}</li>
+        <li>address: {props.userItems.address.zipcode} {props.userItems.address.city} {props.userItems.address.street} {props.userItems.address.suite}</li>
+      </ul>
+
+      <p>comments:</p>
+      <ul>{props.comments[2].filter(postItem => props.idNow === postItem.postId)
+        .map((postItem, postIndex) => {
+          return <React.Fragment key={postIndex}>
+            <li>{postItem.body}</li>
+          </React.Fragment>
+          
+        })}</ul> 
+        
+      <button className='btn btn-danger form-control'
+        onClick={(e) => {
+          e.stopPropagation();
+            setVisible(false);
+        }}>
+        Összecsukás</button>
+    </div> }
+
+  </React.Fragment>
+}
+
+
+function App(props) {
+
+  const [comments, setComments] = useState([]);
+
+  console.log(props);
 
   useEffect(() => {
     Promise.all([
@@ -31,51 +69,30 @@ function App() {
         {
           comments[1].map((commentsItem, commentIndex) => {
             const idNow = commentsItem.id;
-
             return (
               <React.Fragment key={commentIndex}>
-                <div className='bg-warning rounded p-3' onClick={() => { document.getElementById('toggleDiv' + idNow).classList.remove('d-none') }}>
+                <div className='bg-warning rounded p-3 maindiv' onClick={() => { /* setVisible(true) */  }}>
                   <p>{idNow}</p>
                   <h3>{commentsItem.title}</h3>
                   <p>{commentsItem.body}</p>
-                   {comments[0].filter(userItems => userItems.id === commentsItem.userId)
-                  .map((userItems, userIndex) => {
-                   
+                  {comments[0].filter(userItems => userItems.id === commentsItem.userId)
+                      
+                    .map((userItems, userIndex) => {
+
+/*                       console.log(`userItems.id: `, userItems.id);
+                      console.log(`commentsItem.userId: `, commentsItem.userId); */
+                      /* console.log(userItems.id); */
                       return <React.Fragment key={userIndex}>
                         <b className='postAuthor'>{userItems.name}</b>
-                        <small id={'small'+idNow}></small>
-                        <div id={'toggleDiv' + idNow} className='mt-3 d-none'>
-                          <ul>
-                            <li>username: {userItems.username}</li>
-                            <li>email: {userItems.email}</li>
-                            <li>phone: {userItems.phone}</li>
-                            <li>website: {userItems.website}</li>
-                            <li>company: {userItems.company.name}, motto: {userItems.company.catchPhrase}</li>
-                            <li>address: {userItems.address.zipcode} {userItems.address.city} {userItems.address.street} {userItems.address.suite}</li>
-                          </ul>
+                          
+  <small id={'small' + idNow}>{Math.max(userItems.id) }</small>
+                      
 
-                          <p>comments:</p>
-                          <ul>{comments[2].filter(postItem => idNow === postItem.postId)
-                          .map((postItem, postIndex) => {
-                            
-                              return <React.Fragment key={postIndex}>
-                                <li>{postItem.body}</li>
-                              </React.Fragment>
-                            
-                          })}</ul>
-                          <button className='form-control btn btn-danger'
-                            onClick={() => {
-                              setTimeout(() => {
-                                document.getElementById('toggleDiv' + idNow).classList.add('d-none')
-                              }, 300);
-                              
-                            }}>
-                            Összecsukás</button>
-                        </div>
+                        <ListItem userItems={userItems} comments = {comments} idNow = {idNow}/>
+
                       </React.Fragment>
-                    
-                  })}
-
+                        
+                    })}
                 </div>
                 <hr />
               </React.Fragment>)
@@ -87,22 +104,23 @@ function App() {
 
   }
 
-  setTimeout(() => {
-    let usersPost = 0;
-    document.querySelectorAll('.postAuthor').forEach( (element, index) => {
-      let postIdNow = index + 1;
-      
-      document.querySelectorAll('.postAuthor').forEach( e => {
-        if(e.innerText === element.innerText) {
-          usersPost++;
-           document.getElementById(`small`+postIdNow).innerHTML = (` (${usersPost} poszt)`);
-        }
+/*     setTimeout(() => {
+      let usersPost = 0;
+      document.querySelectorAll('.postAuthor').forEach((element, index) => {
+        let postIdNow = index + 1;
+  
+        document.querySelectorAll('.postAuthor').forEach(e => {
+          if (e.innerText === element.innerText) {
+            usersPost++;
+            document.getElementById(`small` + postIdNow).innerHTML = (` (${usersPost} poszt)`);
+          }
+        })
+  
+        usersPost = 0;
       })
-
-      usersPost = 0;
-      })
-  }, 300);
+    }, 300); */
 
 }
 
 export default App;
+
