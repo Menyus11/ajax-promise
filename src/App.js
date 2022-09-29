@@ -3,46 +3,44 @@ import React from 'react';
 import './App.css';
 
 function ListItem(props) {
-  const [visible, setVisible] = useState(true);
+   const [visible, setVisible] = useState(true);
 
   return <React.Fragment>
-    {visible && 
-    <div >
-      <ul>
-        <li>username: {props.userItems.username}</li>
-        <li>email: {props.userItems.email}</li>
-        <li>phone: {props.userItems.phone}</li>
-        <li>website: {props.userItems.website}</li>
-        <li>company: {props.userItems.company.name}, motto: {props.userItems.company.catchPhrase}</li>
-        <li>address: {props.userItems.address.zipcode} {props.userItems.address.city} {props.userItems.address.street} {props.userItems.address.suite}</li>
-      </ul>
+    {visible &&
+      <div >
+        <ul>
+          <li>username: {props.userItems.username}</li>
+          <li>email: {props.userItems.email}</li>
+          <li>phone: {props.userItems.phone}</li>
+          <li>website: {props.userItems.website}</li>
+          <li>company: {props.userItems.company.name}, motto: {props.userItems.company.catchPhrase}</li>
+          <li>address: {props.userItems.address.zipcode} {props.userItems.address.city} {props.userItems.address.street} {props.userItems.address.suite}</li>
+        </ul>
 
-      <p>comments:</p>
-      <ul>{props.comments[2].filter(postItem => props.idNow === postItem.postId)
-        .map((postItem, postIndex) => {
-          return <React.Fragment key={postIndex}>
-            <li>{postItem.body}</li>
-          </React.Fragment>
-          
-        })}</ul> 
-        
-      <button className='btn btn-danger form-control'
-        onClick={(e) => {
-          e.stopPropagation();
+        <p>comments:</p>
+        <ul>{props.comments[2].filter(postItem => props.idNow === postItem.postId)
+          .map((postItem, postIndex) => {
+            return <React.Fragment key={postIndex}>
+              <li>{postItem.body}</li>
+            </React.Fragment>
+
+          })}</ul>
+
+        <button className='btn btn-danger form-control'
+          onClick={(e) => {
+            e.stopPropagation();
             setVisible(false);
-        }}>
-        Összecsukás</button>
-    </div> }
+          }}>
+          Összecsukás</button>
+      </div>}
 
   </React.Fragment>
 }
 
 
-function App(props) {
+function App({setVisible}) {
 
   const [comments, setComments] = useState([]);
-
-  console.log(props);
 
   useEffect(() => {
     Promise.all([
@@ -71,27 +69,22 @@ function App(props) {
             const idNow = commentsItem.id;
             return (
               <React.Fragment key={commentIndex}>
-                <div className='bg-warning rounded p-3 maindiv' onClick={() => { /* setVisible(true) */  }}>
+                <div className='bg-warning rounded p-3 maindiv' onClick={() => { /* setVisible(true) */ }}>
                   <p>{idNow}</p>
                   <h3>{commentsItem.title}</h3>
                   <p>{commentsItem.body}</p>
                   {comments[0].filter(userItems => userItems.id === commentsItem.userId)
-                      
+
                     .map((userItems, userIndex) => {
 
-/*                       console.log(`userItems.id: `, userItems.id);
-                      console.log(`commentsItem.userId: `, commentsItem.userId); */
-                      /* console.log(userItems.id); */
                       return <React.Fragment key={userIndex}>
                         <b className='postAuthor'>{userItems.name}</b>
-                          
-  <small id={'small' + idNow}>{Math.max(userItems.id) }</small>
-                      
+                        <small id={'small' + idNow}></small>
 
-                        <ListItem userItems={userItems} comments = {comments} idNow = {idNow}/>
+                        <ListItem userItems={userItems} comments={comments} idNow={idNow}/>
 
                       </React.Fragment>
-                        
+
                     })}
                 </div>
                 <hr />
@@ -104,21 +97,21 @@ function App(props) {
 
   }
 
-/*     setTimeout(() => {
-      let usersPost = 0;
-      document.querySelectorAll('.postAuthor').forEach((element, index) => {
-        let postIdNow = index + 1;
-  
-        document.querySelectorAll('.postAuthor').forEach(e => {
-          if (e.innerText === element.innerText) {
-            usersPost++;
-            document.getElementById(`small` + postIdNow).innerHTML = (` (${usersPost} poszt)`);
-          }
+  /*     setTimeout(() => {
+        let usersPost = 0;
+        document.querySelectorAll('.postAuthor').forEach((element, index) => {
+          let postIdNow = index + 1;
+    
+          document.querySelectorAll('.postAuthor').forEach(e => {
+            if (e.innerText === element.innerText) {
+              usersPost++;
+              document.getElementById(`small` + postIdNow).innerHTML = (` (${usersPost} poszt)`);
+            }
+          })
+    
+          usersPost = 0;
         })
-  
-        usersPost = 0;
-      })
-    }, 300); */
+      }, 300); */
 
 }
 
