@@ -3,7 +3,7 @@ import React from 'react';
 import './App.css';
 import ListItem from './componens';
 
-function App({ setVisible }) {
+function App() {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
